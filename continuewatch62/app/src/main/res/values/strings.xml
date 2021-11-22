@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Continue Watch</string>
+    <string name="seconds">Seconds elapsed: %1$s.</string>
+    <string name="land">TextView</string>
+    <string name="hello">Hello World!</string>
+    <string name="time">0</string>
+    <string name="thread" />
+</resources>
