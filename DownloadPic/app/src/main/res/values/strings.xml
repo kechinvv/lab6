@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DownloadPic</string>
+    <string name="buttontext">Download</string>
+    <string name="link1">https://i.pinimg.com/originals/79/a2/5a/79a25a69493d41a2248439e39bec2490.jpg</string>
+    <string name="link2">https://c.wallhere.com/photos/ea/cd/1920x1200_px_Inception-563909.jpg!d</string>
+    <string name="link3">https://www.watson.ch/imgdb/dcf6/Qx,A,0,0,245,188,102,78,40,31/92670522363155</string>
+</resources>
