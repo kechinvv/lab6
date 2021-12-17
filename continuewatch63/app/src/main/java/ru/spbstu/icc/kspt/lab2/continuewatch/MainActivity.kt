@@ -11,39 +11,11 @@ import kotlinx.coroutines.*
 @DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
-<<<<<<< HEAD
     var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
 
 
     private lateinit var backgroundThread: Job
-=======
-    private var secondsElapsed: Int = 0
-    lateinit var textSecondsElapsed: TextView
-    private var stopped = false
-    private var destroy = false
-    private var threadNum = 0
-
-
-    private var backgroundThread = Thread {
-        val num = threadNum
-        threadNum++
-        Log.i("test", "Thread $num start")
-        while (!destroy) {
-            if (!stopped) {
-                val start = System.currentTimeMillis()
-                Thread.sleep(1000)
-                textSecondsElapsed.post {
-                    textSecondsElapsed.text =
-                        String.format(getString(R.string.seconds), secondsElapsed++)
-                }
-                val finish = System.currentTimeMillis()
-                Log.i("time","Time passed: " + (finish - start))
-            }
-        }
-        Log.i("test", "Thread $num stop")
-    }
->>>>>>> origin/master
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,28 +53,8 @@ class MainActivity : AppCompatActivity() {
         }
         super.onResume()
         Log.i("test", "onResume")
-<<<<<<< HEAD
         Log.i("test", "Count of threads: " + Thread.getAllStackTraces().size)
-=======
-        stopped = false
-    }
-
-    override fun onStart() {
-        secondsElapsed = prefs.getInt(getString(R.string.time), 0)
-        threadNum = prefs.getInt(getString(R.string.thread), 0)
-        destroy = false
-        backgroundThread.start()
-        super.onStart()
-        Log.i("test", "onStart")
-    }
-
-    override fun onStop() {
-        destroy = true
-        prefs.edit().putInt(getString(R.string.time), secondsElapsed).apply()
-        prefs.edit().putInt(getString(R.string.thread), threadNum).apply()
-        super.onStop()
-        Log.i("test", "onStop")
->>>>>>> origin/master
     }
 
 }
+

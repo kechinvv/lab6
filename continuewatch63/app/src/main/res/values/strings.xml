@@ -3,10 +3,5 @@
     <string name="seconds">Seconds elapsed: %1$s.</string>
     <string name="land">TextView</string>
     <string name="hello">Hello World!</string>
-<<<<<<< HEAD
     <string name="time"></string>
-=======
-    <string name="time">0</string>
-    <string name="thread" />
->>>>>>> origin/master
 </resources>
