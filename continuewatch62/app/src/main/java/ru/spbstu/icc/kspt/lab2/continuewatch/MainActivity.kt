@@ -6,23 +6,20 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
-    private val executorService: ScheduledExecutorService =
-        Executors.newSingleThreadScheduledExecutor()
+
+
     private lateinit var future: ScheduledFuture<*>
 
     private var backgroundThread = Runnable {
         Log.i("test",  Thread.currentThread().name + " working")
-        textSecondsElapsed.post {
+       runOnUiThread {
             textSecondsElapsed.text =
                 String.format(getString(R.string.seconds), secondsElapsed++)
         }
@@ -47,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         secondsElapsed = prefs.getInt(getString(R.string.time), 0)
-        future = executorService.scheduleAtFixedRate(backgroundThread, 1, 1, TimeUnit.SECONDS)
+        future = (application as MyApplication).executor.scheduleAtFixedRate(backgroundThread, 1, 1, TimeUnit.SECONDS)
         super.onResume()
         Log.i("test", "onResume")
         Log.i("test", "Count of threads: "+ Thread.getAllStackTraces().size)
@@ -55,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onDestroy() {
-        executorService.shutdown()
         super.onDestroy()
         Log.i("test", "onDestroy")
     }
