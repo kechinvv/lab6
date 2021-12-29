@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import java.net.URL
+import java.util.concurrent.Future
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
     private var num = 0
     private lateinit var urlStr: List<String>
     private lateinit var image: ImageView
-
+    private var future: Future<*>? = null
 
     private val backgroundThread = Runnable {
         val newUrl = URL(urlStr[num])
@@ -37,17 +38,17 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button1)?.setOnClickListener {
             num = 0
-            (application as MyApplication).executor.submit(backgroundThread)
+            future = (application as MyApplication).executor.submit(backgroundThread)
         }
 
         findViewById<Button>(R.id.button2)?.setOnClickListener {
             num = 1
-            (application as MyApplication).executor.submit(backgroundThread)
+            future = (application as MyApplication).executor.submit(backgroundThread)
         }
 
         findViewById<Button>(R.id.button3)?.setOnClickListener {
             num = 2
-            (application as MyApplication).executor.submit(backgroundThread)
+            future = (application as MyApplication).executor.submit(backgroundThread)
         }
 
     }
@@ -55,5 +56,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i("test", "Count of threads: " + Thread.getAllStackTraces().size)
+    }
+
+    override fun onDestroy() {
+        if (future != null) future!!.cancel(true)
+        super.onDestroy()
     }
 }
