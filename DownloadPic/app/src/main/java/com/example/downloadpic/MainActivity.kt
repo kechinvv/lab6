@@ -52,11 +52,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        (application as MyApplication).executor.shutdown()
-        super.onDestroy()
-    }
-
     override fun onResume() {
         super.onResume()
         Log.i("test", "Count of threads: " + Thread.getAllStackTraces().size)

@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.concurrent.*
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,8 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var future: ScheduledFuture<*>
 
     private var backgroundThread = Runnable {
-        Log.i("test",  Thread.currentThread().name + " working")
-       runOnUiThread {
+        Log.i("test", Thread.currentThread().name + " working")
+        runOnUiThread {
             textSecondsElapsed.text =
                 String.format(getString(R.string.seconds), secondsElapsed++)
         }
@@ -44,10 +45,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         secondsElapsed = prefs.getInt(getString(R.string.time), 0)
-        future = (application as MyApplication).executor.scheduleAtFixedRate(backgroundThread, 1, 1, TimeUnit.SECONDS)
+        future = (application as MyApplication).executor.scheduleAtFixedRate(
+            backgroundThread,
+            1,
+            1,
+            TimeUnit.SECONDS
+        )
         super.onResume()
         Log.i("test", "onResume")
-        Log.i("test", "Count of threads: "+ Thread.getAllStackTraces().size)
+        Log.i("test", "Count of threads: " + Thread.getAllStackTraces().size)
     }
 
 
