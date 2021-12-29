@@ -7,9 +7,11 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URL
 
 @DelicateCoroutinesApi
@@ -20,13 +22,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var image: ImageView
     private lateinit var mIcon: Bitmap
 
-    private fun backgroundThread() {
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun backgroundThread() {
         val newUrl = URL(urlStr[num])
         mIcon = BitmapFactory.decodeStream(newUrl.openConnection().getInputStream())
-        runOnUiThread(setPic)
+        withContext(Dispatchers.Main) {
+            image.setImageBitmap(mIcon)
+        }
     }
-
-    private var setPic = Runnable { image.setImageBitmap(mIcon) }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,17 +45,17 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.button1)?.setOnClickListener {
             num = 0
-            GlobalScope.launch { backgroundThread() }
+            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
         }
 
         findViewById<Button>(R.id.button2)?.setOnClickListener {
             num = 1
-            GlobalScope.launch { backgroundThread() }
+            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
         }
 
         findViewById<Button>(R.id.button3)?.setOnClickListener {
             num = 2
-            GlobalScope.launch { backgroundThread() }
+            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
         }
 
     }
