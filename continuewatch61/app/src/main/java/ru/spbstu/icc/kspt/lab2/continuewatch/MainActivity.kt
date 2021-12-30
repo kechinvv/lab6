@@ -11,25 +11,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
-    private var stopped = false
-    private var destroy = false
+    @Volatile private var stopped = false
+    @Volatile private var destroy = false
     private var threadNum = 0
 
 
-    private var backgroundThread = Thread {
+    private var backgroundThread = Runnable {
         val num = threadNum
         threadNum++
         Log.i("test", "Thread $num start")
         while (!destroy) {
+            val start = System.currentTimeMillis()
+            Thread.sleep(1000)
             if (!stopped) {
-                val start = System.currentTimeMillis()
-                Thread.sleep(1000)
                 textSecondsElapsed.post {
                     textSecondsElapsed.text =
                         String.format(getString(R.string.seconds), secondsElapsed++)
                 }
                 val finish = System.currentTimeMillis()
-                Log.i("time","Time passed: " + (finish - start))
+                Log.i("time", "Time passed: " + (finish - start))
             }
         }
         Log.i("test", "Thread $num stop")
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         secondsElapsed = prefs.getInt(getString(R.string.time), 0)
         threadNum = prefs.getInt(getString(R.string.thread), 0)
         destroy = false
-        backgroundThread.start()
+        Thread(backgroundThread).start()
         super.onStart()
         Log.i("test", "onStart")
     }
