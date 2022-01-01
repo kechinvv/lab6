@@ -12,8 +12,6 @@ class MainActivity : AppCompatActivity() {
     private var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
     @Volatile
-    private var stopped = false
-    @Volatile
     private var destroy = false
     private var threadNum = 0
 
@@ -51,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         prefs.edit().putInt(getString(R.string.time), secondsElapsed).apply()
         prefs.edit().putInt(getString(R.string.thread), threadNum).apply()
         Log.i("test", "onPause")
-        stopped = true
     }
 
     override fun onResume() {
@@ -61,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         Thread(backgroundThread).start()
         super.onResume()
         Log.i("test", "onResume")
-        stopped = false
     }
 
 
