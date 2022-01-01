@@ -28,11 +28,9 @@ class MainActivity : AppCompatActivity() {
         prefs = getPreferences(Context.MODE_PRIVATE)
         Log.i("test", "onCreate")
 
-        backgroundThread = lifecycleScope.launch(Dispatchers.Default) {
-            Log.i("name", "Thread name1: " + Thread.currentThread().name)
+        backgroundThread = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 var prev = System.nanoTime() / 1000000
-                Log.i("name", "Thread name2: " + Thread.currentThread().name)
                 while (this.isActive) {
                     val cur: Long = System.nanoTime() / 1000000
                     if (cur < prev + 100) {
@@ -40,10 +38,8 @@ class MainActivity : AppCompatActivity() {
                         continue
                     }
                     if (cur < prev + 999) continue
-                    withContext(Dispatchers.Main) {
-                        textSecondsElapsed.text =
-                            String.format(getString(R.string.seconds), secondsElapsed++)
-                    }
+                    textSecondsElapsed.text =
+                        String.format(getString(R.string.seconds), secondsElapsed++)
                     val finish: Long = System.nanoTime() / 1000000
                     Log.i("time", "Time passed: " + (finish - prev))
                     prev += 1000
