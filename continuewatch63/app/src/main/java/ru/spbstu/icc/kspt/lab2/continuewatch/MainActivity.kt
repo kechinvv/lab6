@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var backgroundThread: Job
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,18 +29,24 @@ class MainActivity : AppCompatActivity() {
         Log.i("test", "onCreate")
 
         backgroundThread = lifecycleScope.launch(Dispatchers.Default) {
+            Log.i("name", "Thread name1: " + Thread.currentThread().name)
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 var prev = System.nanoTime() / 1000000
+                Log.i("name", "Thread name2: " + Thread.currentThread().name)
                 while (this.isActive) {
                     val cur: Long = System.nanoTime() / 1000000
-                    if (cur != prev + 1000) continue
+                    if (cur < prev + 100) {
+                        delay(900)
+                        continue
+                    }
+                    if (cur < prev + 999) continue
                     withContext(Dispatchers.Main) {
                         textSecondsElapsed.text =
                             String.format(getString(R.string.seconds), secondsElapsed++)
                     }
                     val finish: Long = System.nanoTime() / 1000000
                     Log.i("time", "Time passed: " + (finish - prev))
-                    prev = cur
+                    prev += 1000
                 }
             }
         }
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("test", "onResume")
         Log.i("test", "Count of threads: " + Thread.getAllStackTraces().size)
     }
+
 
 }
 
