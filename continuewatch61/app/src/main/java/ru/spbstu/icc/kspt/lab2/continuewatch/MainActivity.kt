@@ -11,8 +11,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
     private var secondsElapsed: Int = 0
     lateinit var textSecondsElapsed: TextView
-    @Volatile private var stopped = false
-    @Volatile private var destroy = false
+    @Volatile
+    private var stopped = false
+    @Volatile
+    private var destroy = false
     private var threadNum = 0
 
 
@@ -23,14 +25,13 @@ class MainActivity : AppCompatActivity() {
         while (!destroy) {
             val start = System.currentTimeMillis()
             Thread.sleep(1000)
-            if (!stopped) {
-                textSecondsElapsed.post {
-                    textSecondsElapsed.text =
-                        String.format(getString(R.string.seconds), secondsElapsed++)
-                }
-                val finish = System.currentTimeMillis()
-                Log.i("time", "Time passed: " + (finish - start))
+            textSecondsElapsed.post {
+                textSecondsElapsed.text =
+                    String.format(getString(R.string.seconds), secondsElapsed++)
             }
+            val finish = System.currentTimeMillis()
+            Log.i("time", "Time passed: " + (finish - start))
+
         }
         Log.i("test", "Thread $num stop")
     }
@@ -46,31 +47,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        destroy = true
+        prefs.edit().putInt(getString(R.string.time), secondsElapsed).apply()
+        prefs.edit().putInt(getString(R.string.thread), threadNum).apply()
         Log.i("test", "onPause")
         stopped = true
     }
 
     override fun onResume() {
+        secondsElapsed = prefs.getInt(getString(R.string.time), 0)
+        threadNum = prefs.getInt(getString(R.string.thread), 0)
+        destroy = false
+        Thread(backgroundThread).start()
         super.onResume()
         Log.i("test", "onResume")
         stopped = false
     }
 
-    override fun onStart() {
-        secondsElapsed = prefs.getInt(getString(R.string.time), 0)
-        threadNum = prefs.getInt(getString(R.string.thread), 0)
-        destroy = false
-        Thread(backgroundThread).start()
-        super.onStart()
-        Log.i("test", "onStart")
-    }
-
-    override fun onStop() {
-        destroy = true
-        prefs.edit().putInt(getString(R.string.time), secondsElapsed).apply()
-        prefs.edit().putInt(getString(R.string.thread), threadNum).apply()
-        super.onStop()
-        Log.i("test", "onStop")
-    }
 
 }
