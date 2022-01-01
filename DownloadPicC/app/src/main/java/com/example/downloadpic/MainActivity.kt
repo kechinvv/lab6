@@ -8,10 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.net.URL
 
 @DelicateCoroutinesApi
@@ -21,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var urlStr: List<String>
     private lateinit var image: ImageView
     private lateinit var mIcon: Bitmap
+    private var job: Job? = null
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun backgroundThread() {
@@ -44,18 +42,21 @@ class MainActivity : AppCompatActivity() {
         )
 
         findViewById<Button>(R.id.button1)?.setOnClickListener {
+            if (job != null && job!!.isActive) job!!.cancel()
             num = 0
-            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
+            job = lifecycleScope.launch(Dispatchers.IO) { backgroundThread() }
         }
 
         findViewById<Button>(R.id.button2)?.setOnClickListener {
+            if (job != null && job!!.isActive) job!!.cancel()
             num = 1
-            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
+            job = lifecycleScope.launch(Dispatchers.IO) { backgroundThread() }
         }
 
         findViewById<Button>(R.id.button3)?.setOnClickListener {
+            if (job != null && job!!.isActive) job!!.cancel()
             num = 2
-            lifecycleScope.launch(Dispatchers.Default) { backgroundThread() }
+            job = lifecycleScope.launch(Dispatchers.IO) { backgroundThread() }
         }
 
     }
