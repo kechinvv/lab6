@@ -37,19 +37,19 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.button1)?.setOnClickListener {
-            if (future != null) future!!.cancel(true)
+            if (future != null && !future!!.isDone) future!!.cancel(true)
             num = 0
             future = (application as MyApplication).executor.submit(backgroundThread)
         }
 
         findViewById<Button>(R.id.button2)?.setOnClickListener {
-            if (future != null) future!!.cancel(true)
+            if (future != null && !future!!.isDone) future!!.cancel(true)
             num = 1
             future = (application as MyApplication).executor.submit(backgroundThread)
         }
 
         findViewById<Button>(R.id.button3)?.setOnClickListener {
-            if (future != null) future!!.cancel(true)
+            if (future != null && !future!!.isDone) future!!.cancel(true)
             num = 2
             future = (application as MyApplication).executor.submit(backgroundThread)
         }
