@@ -28,20 +28,20 @@ class MainActivity : AppCompatActivity() {
         prefs = getPreferences(Context.MODE_PRIVATE)
         Log.i("test", "onCreate")
 
-        backgroundThread = lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+        backgroundThread = lifecycleScope.launch(Dispatchers.Default) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 var prev = System.nanoTime() / 1000000
                 while (this.isActive) {
                     val cur: Long = System.nanoTime() / 1000000
                     if (cur < prev + 100) {
-                        withContext(Dispatchers.Default) {
-                            delay(900)
-                        }
+                        delay(900)
                         continue
                     }
                     if (cur < prev + 999) continue
-                    textSecondsElapsed.text =
-                        String.format(getString(R.string.seconds), secondsElapsed++)
+                    withContext(Dispatchers.Main) {
+                        textSecondsElapsed.text =
+                            String.format(getString(R.string.seconds), secondsElapsed++)
+                    }
                     val finish: Long = System.nanoTime() / 1000000
                     Log.i("time", "Time passed: " + (finish - prev))
                     prev += 1000
