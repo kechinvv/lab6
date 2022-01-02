@@ -29,12 +29,14 @@ class MainActivity : AppCompatActivity() {
         Log.i("test", "onCreate")
 
         backgroundThread = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 var prev = System.nanoTime() / 1000000
                 while (this.isActive) {
                     val cur: Long = System.nanoTime() / 1000000
                     if (cur < prev + 100) {
-                        delay(900)
+                        withContext(Dispatchers.Default) {
+                            delay(900)
+                        }
                         continue
                     }
                     if (cur < prev + 999) continue
