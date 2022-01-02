@@ -14,11 +14,8 @@ import kotlinx.coroutines.*
 @DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
-    var secondsElapsed: Int = 0
+    private var secondsElapsed: Int = 0
     private lateinit var textSecondsElapsed: TextView
-
-
-    private lateinit var backgroundThread: Job
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         prefs = getPreferences(Context.MODE_PRIVATE)
         Log.i("test", "onCreate")
 
-        backgroundThread = lifecycleScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 var prev = System.nanoTime() / 1000000
                 while (this.isActive) {
